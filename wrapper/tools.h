@@ -369,6 +369,7 @@ static const auto &parseLLVMVersion = parseOSVersion;
 enum Compiler : int {
   CLANG,
   CLANGXX,
+  FLANG,
   GCC,
   GXX,
   UNKNOWN // Upper-case to avoid clash with "enum Arch"
@@ -379,6 +380,8 @@ inline Compiler getCompilerIdentifier(const char *compilername) {
     return Compiler::CLANGXX;
   if (!strncmp(compilername, "clang", 5))
     return Compiler::CLANG;
+  else if (!strncmp(compilername, "flang", 5))
+    return Compiler::FLANG;
   else if (!strncmp(compilername, "g++", 3))
     return Compiler::GXX;
   else if (!strncmp(compilername, "gcc", 3))
