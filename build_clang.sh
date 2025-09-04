@@ -112,6 +112,13 @@ if [ -z "$UNATTENDED" ]; then
     echo "Disabling two stage build ..."
   fi
 
+  if prompt "Enable Fortran compiler? "; then
+    echo "Enabling LLVM Fortran compiler ..."
+    ENABLE_FORTRAN=1
+  else
+    echo "Disabling LLVM Fortran compiler ..."
+  fi
+
   echo ""
   read -p "Press enter to start building."
   echo ""
@@ -174,7 +181,7 @@ fi
 PROJECTS="clang"
 
 if [ -n "$ENABLE_FORTRAN" ]; then
-  PROJECTS+=";flang"
+  PROJECTS+=";mlir;flang"  # mlir is a dependency of flang
 fi
 
 function build()
