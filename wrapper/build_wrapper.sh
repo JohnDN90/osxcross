@@ -135,6 +135,12 @@ if [ $TARGETCOMPILER = "clang" ]; then
   create_wrapper_link clang++-libc++ 2
   create_wrapper_link clang++-stdc++ 2
   create_wrapper_link clang++-gstdc++ 2
+  if command -v flang >/dev/null 2>&1; then
+    create_wrapper_link flang 2
+  fi
+  if command -v flang-new >/dev/null 2>&1; then
+    create_wrapper_link flang-new 2
+  fi
 elif [ $TARGETCOMPILER = "gcc" ]; then
   create_wrapper_link gcc 2
   create_wrapper_link g++ 2
