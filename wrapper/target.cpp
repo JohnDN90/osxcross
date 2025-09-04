@@ -830,10 +830,12 @@ bool Target::setup() {
     fargs.push_back(path);
   };
 
-  addCXXHeaderPath(CXXHeaderPath);
+  if (compilername != "flang" && compilername != "flang-new") {
+    addCXXHeaderPath(CXXHeaderPath);
 
-  for (auto &path : AdditionalCXXHeaderPaths)
-    addCXXHeaderPath(path);
+    for (auto &path : AdditionalCXXHeaderPaths)
+      addCXXHeaderPath(path);
+  }
 
   if (getenv("OSXCROSS_MP_INC")) {
     std::string MacPortsIncludeDir;
@@ -867,19 +869,21 @@ bool Target::setup() {
     fargs.push_back(ClangIntrinsicPath);
   }
 
-  if (OSNum.Num()) {
-    std::string tmp;
-    tmp = "-mmacosx-version-min=";
-    if (isClang() && clangversion < ClangVersion(11, 0) &&
-        OSNum >= OSVersion(11, 0)) {
-      // Clang <= 10 can't parse -mmacosx-version-min=11.x
-      warn << "Your clang installation is outdated and can't parse '-mmacosx-version-min=" << OSNum.shortStr() << "'. "
-           << "Setting it to 10.16."  << warn.endl();
-      tmp += "10.16";
-    } else {
-      tmp += OSNum.Str();
+  if (compilername != "flang" && compilername != "flang-new") {
+    if (OSNum.Num()) {
+      std::string tmp;
+      tmp = "-mmacosx-version-min=";
+      if (isClang() && clangversion < ClangVersion(11, 0) &&
+          OSNum >= OSVersion(11, 0)) {
+        // Clang <= 10 can't parse -mmacosx-version-min=11.x
+        warn << "Your clang installation is outdated and can't parse '-mmacosx-version-min=" << OSNum.shortStr() << "'. "
+             << "Setting it to 10.16."  << warn.endl();
+        tmp += "10.16";
+      } else {
+        tmp += OSNum.Str();
+      }
+      fargs.push_back(tmp);
     }
-    fargs.push_back(tmp);
   }
 
   for (auto arch : targetarchs) {
