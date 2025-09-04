@@ -46,6 +46,14 @@ constexpr Compiler getDefaultCXXCompilerIdentifier() {
   return Compiler::CLANGXX;
 }
 
+constexpr const char *getDefaultFortranCompilerName() {
+  return "flang-new";
+}
+
+constexpr Compiler getDefaultFortranCompilerIdentifier() {
+  return Compiler::FLANG;
+}
+
 constexpr const char *getSupportedArchsString() { return OSXCROSS_SUPPORTED_ARCHS; }
 
 static inline std::vector<Arch> getSupportedArchs() {
