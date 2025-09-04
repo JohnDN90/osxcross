@@ -378,6 +378,12 @@ for ARCH in $SUPPORTED_ARCHS; do
 
   test_compiler $ARCH-apple-$TARGET-clang   $BASE_DIR/oclang/test.c   "$req"
   test_compiler $ARCH-apple-$TARGET-clang++ $BASE_DIR/oclang/test.cpp "$req"
+  if command -v flang-new >/dev/null 2>&1; then
+    test_compiler $ARCH-apple-$TARGET-flang-new $BASE_DIR/oclang/test.f90 "$req"
+  fi
+  if command -v flang >/dev/null 2>&1; then
+    test_compiler $ARCH-apple-$TARGET-flang $BASE_DIR/oclang/test.f90 "$req"
+  fi
 done
 
 echo ""
