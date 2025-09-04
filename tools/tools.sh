@@ -475,7 +475,11 @@ function test_compiler()
   fi
 
   echo -ne "testing $1 ... "
-  $1 $2 -O2 -Wall -o test
+  if [[ "$1" == *flang || "$1" == *flang-new ]]; then
+    $1 $2 -O2 -o test
+  else
+    $1 $2 -O2 -Wall -o test
+  fi
 
   if [ $? -eq 0 ]; then
     rm test
