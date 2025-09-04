@@ -171,6 +171,12 @@ if ([[ $CLANG_VERSION == 9* ]] || [[ $CLANG_VERSION == 8* ]]); then
 \ #include <string>/' *llvm*/llvm/include/llvm/Demangle/MicrosoftDemangleNodes.h
 fi
 
+PROJECTS="clang"
+
+if [ -n "$ENABLE_FORTRAN" ]; then
+  PROJECTS+=";flang"
+fi
+
 function build()
 {
   stage=$1
@@ -180,7 +186,7 @@ function build()
     -DCMAKE_INSTALL_PREFIX=$INSTALLPREFIX \
     -DCMAKE_BUILD_TYPE=Release \
     -DLLVM_ENABLE_ASSERTIONS=OFF \
-    -DLLVM_ENABLE_PROJECTS="clang" \
+    -DLLVM_ENABLE_PROJECTS="${PROJECTS}" \
     -DLLVM_TARGETS_TO_BUILD="X86;AArch64;ARM" \
     -DLLVM_TEMPORARILY_ALLOW_OLD_TOOLCHAIN=1
   $MAKE $2 -j $JOBS
