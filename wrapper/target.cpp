@@ -841,7 +841,15 @@ bool Target::setup() {
     fargs.push_back("-isysroot");
     fargs.push_back(SDKPath);
 
-    
+    if (getenv("EXPLICIT_SYSROOT_FLAGS")) {
+      fargs.push_back("-I"+SDKPath+"/usr/include");
+      fargs.push_back("-I"+SDKPath+"/usr/include/c++/v1");
+      fargs.push_back("-I"+SDKPath+"/System/Library/Frameworks");
+      fargs.push_back("-L"+SDKPath+"/usr/lib");
+      fargs.push_back("-L"+SDKPath+"/usr/lib/system");
+      fargs.push_back("-L"+SDKPath+"/System/Library/Frameworks");
+      fargs.push_back("-Wl,-syslibroot,"+SDKPath);
+    }
 
     if (isCXX()) {
       tmp = "-stdlib=";
