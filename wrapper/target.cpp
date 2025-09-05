@@ -869,10 +869,34 @@ bool Target::setup() {
     fargs.push_back(ClangIntrinsicPath);
   }
 
-  if (compilername != "flang" && compilername != "flang-new") {
+
+  if ((compilername == "flang") || (compilername == "flang-new")) {
+    if (OSNum.Num()) {
+      // Assuming clang and flang version numbers are the same
+      // flang < 21 doesn't have the '-mmacos-version-min=xx.x' option
+      if (isClang() && clangversion < ClangVersion(21, 0)) {
+        warn << "Used clang version " << clangversion.Str() << " as flang version. Your flang installation is outdated and can't parse '-mmacos-version-min="
+             << OSNum.shortStr() << "'. This flag will not be set." << warn.endl();
+      }
+      else {
+        std::string tmp;
+        tmp = "-mmacos-version-min=";
+        tmp += OSNum.Str();
+        fargs.push_back(tmp);
+      }
+    }
+  }
+  else {
     if (OSNum.Num()) {
       std::string tmp;
-      tmp = "-mmacosx-version-min=";
+      // In clang version <= 14.x, the old '-mmacosx-version-min=' option is used
+      if (isClang() && clangversion < ClangVersion(15, 0)) {
+        tmp = "-mmacosx-version-min=";
+      }
+      // In clang version ?= 15.x, the new '-mmacos-version-min=' opton is used
+      else {
+        tmp = "-mmacos-version-min=";
+      }
       if (isClang() && clangversion < ClangVersion(11, 0) &&
           OSNum >= OSVersion(11, 0)) {
         // Clang <= 10 can't parse -mmacosx-version-min=11.x
