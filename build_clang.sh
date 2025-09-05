@@ -110,6 +110,7 @@ if [ -z "$UNATTENDED" ]; then
     ENABLE_BOOTSTRAP=1
   else
     echo "Disabling two stage build ..."
+    unset ENABLE_BOOTSTRAP
   fi
 
   if prompt "Enable Fortran compiler? "; then
@@ -117,6 +118,15 @@ if [ -z "$UNATTENDED" ]; then
     ENABLE_FORTRAN=1
   else
     echo "Disabling LLVM Fortran compiler ..."
+    unset ENABLE_FORTRAN
+  fi
+
+  if prompt "Enable OpenMP? "; then
+    echo "Enabling LLVM OpenMP..."
+    ENABLE_OPENMP=1
+  else
+    echo "Disabling LLVM OpenMP..."
+    unset ENABLE_OPENMP
   fi
 
   echo ""
@@ -184,6 +194,10 @@ RUNTIMES=""
 if [ -n "$ENABLE_FORTRAN" ]; then
   PROJECTS+=";mlir;flang"  # mlir is a dependency of flang
   RUNTIMES+="compiler-rt;flang-rt"  # compiler-rt is a dependency of flang
+fi
+
+if [ -n "$ENABLE_OPENMP" ]; then
+  PROJECTS+=";openmp"
 fi
 
 function build()
