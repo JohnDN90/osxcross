@@ -315,6 +315,10 @@ bool Target::isGCH() {
 }
 
 
+bool Target::isFlang() const {
+  return (compiler == Compiler::FLANG);
+}
+
 bool Target::isClang() const {
   return (compiler == Compiler::CLANG || compiler == Compiler::CLANGXX);
 }
@@ -365,7 +369,7 @@ void Target::setCompilerPath() {
 bool Target::findClangIntrinsicHeaders(std::string &path) {
   static std::stringstream dir;
 
-  assert(isClang());
+  assert(isClang() || isFlang());
 
   if (compilerpath.empty())
     return false;
@@ -755,6 +759,7 @@ bool Target::setup() {
 
   std::string ClangIntrinsicPath;
 
+  // Clang (C, C++)
   if (isClang()) {
     std::string tmp;
 
@@ -802,7 +807,64 @@ bool Target::setup() {
         setupGCCLibs(targetarchs[0]);
       }
     }
-  } else if (isGCC()) {
+  } 
+
+  // Flang (Fortran)
+  else if (isFlang()) {
+    std::string tmp;
+
+    fargs.push_back("-target");
+    fargs.push_back(getTriple());
+
+    // tmp = "-mlinker-version=";
+    // tmp += getLinkerVersion();
+
+    fargs.push_back(tmp);
+    tmp.clear();
+
+#ifndef __APPLE__
+    if (!findClangIntrinsicHeaders(ClangIntrinsicPath)) {
+      warn << "cannot find clang intrinsic headers; please report this "
+              "issue to the OSXCross project" << warn.endl();
+    } else {
+      if (haveArch(Arch::x86_64h) && clangversion < ClangVersion(3, 5)) {
+        err << "'" << getArchName(Arch::x86_64h) << "' requires clang 3.5 "
+            << "(or later)" << err.endl();
+        return false;
+      }
+    }
+
+    tmp.clear();
+#endif
+    fargs.push_back("--sysroot="+SDKPath);
+
+    fargs.push_back("-isysroot");
+    fargs.push_back(SDKPath);
+
+    
+
+    if (isCXX()) {
+      tmp = "-stdlib=";
+      tmp += getStdLibString(stdlib);
+      fargs.push_back(tmp);
+
+      if (stdlib == StdLib::libcxx ||
+          (stdlib == StdLib::libstdcxx && usegcclibs)) {
+        fargs.push_back("-nostdinc++");
+        fargs.push_back("-Qunused-arguments");
+      }
+
+      if (stdlib == StdLib::libstdcxx && usegcclibs && targetarchs.size() < 2 &&
+          !isGCH()) {
+        // Use libs from './build_gcc' installation
+        setupGCCLibs(targetarchs[0]);
+      }
+    }
+
+  } 
+
+  // GNU GCC
+  else if (isGCC()) {
     if (isCXX() && stdlib == StdLib::libcxx) {
       fargs.push_back("-nostdinc++");
       fargs.push_back("-nodefaultlibs");
@@ -830,7 +892,7 @@ bool Target::setup() {
     fargs.push_back(path);
   };
 
-  if (compilername != "flang" && compilername != "flang-new") {
+  if (! isFlang()) {
     addCXXHeaderPath(CXXHeaderPath);
 
     for (auto &path : AdditionalCXXHeaderPaths)
@@ -870,11 +932,11 @@ bool Target::setup() {
   }
 
 
-  if ((compilername == "flang") || (compilername == "flang-new")) {
+  if (isFlang()) {
     if (OSNum.Num()) {
       // Assuming clang and flang version numbers are the same
       // flang < 21 doesn't have the '-mmacos-version-min=xx.x' option
-      if (isClang() && clangversion < ClangVersion(21, 0)) {
+      if (clangversion < ClangVersion(21, 0)) {
         warn << "Used clang version " << clangversion.Str() << " as flang version. Your flang installation is outdated and can't parse '-mmacos-version-min="
              << OSNum.shortStr() << "'. This flag will not be set." << warn.endl();
       }
@@ -999,6 +1061,12 @@ bool Target::setup() {
         fargs.erase(fargs.end() - 1);
     }
   }
+
+  // // Print arguments
+  // warn << "fargs:\n";
+  // for (const auto& arg : fargs)
+  //   warn << "\t" << arg << "\n";
+  // warn << warn.endl();
 
   bool isgcclibstdcxx =
       (isGCC() || (isClang() && usegcclibs && stdlib == StdLib::libstdcxx));

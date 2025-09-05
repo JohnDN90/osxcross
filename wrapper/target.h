@@ -143,6 +143,7 @@ struct Target {
   bool isCXX();
   bool isGCH();
 
+  bool isFlang() const;
   bool isClang() const;
   bool isGCC() const;
 
