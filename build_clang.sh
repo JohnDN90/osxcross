@@ -179,9 +179,11 @@ if ([[ $CLANG_VERSION == 9* ]] || [[ $CLANG_VERSION == 8* ]]); then
 fi
 
 PROJECTS="clang"
+RUNTIMES=""
 
 if [ -n "$ENABLE_FORTRAN" ]; then
   PROJECTS+=";mlir;flang"  # mlir is a dependency of flang
+  RUNTIMES+="compiler-rt;flang-rt"  # compiler-rt is a dependency of flang
 fi
 
 function build()
@@ -194,6 +196,7 @@ function build()
     -DCMAKE_BUILD_TYPE=Release \
     -DLLVM_ENABLE_ASSERTIONS=OFF \
     -DLLVM_ENABLE_PROJECTS="${PROJECTS}" \
+    -DLLVM_ENABLE_RUNTIMES="${RUNTIMES}" \
     -DLLVM_TARGETS_TO_BUILD="X86;AArch64;ARM" \
     -DLLVM_TEMPORARILY_ALLOW_OLD_TOOLCHAIN=1
   $MAKE $2 -j $JOBS
