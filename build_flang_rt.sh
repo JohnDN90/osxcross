@@ -233,8 +233,7 @@ if [ $f_res -eq 1 ]; then
     }
 
     ARCHS=""
-    check_archs arm64
-    # check_archs i386 x86_64 x86_64h arm64 arm64e
+    check_archs i386 x86_64 x86_64h arm64 arm64e
  
     if [ -z "$ARCHS" ]; then
       echo "Compiler does not seem to work"
