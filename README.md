@@ -53,6 +53,7 @@ It also includes scripts for optionally building:
 - Up-to-date LLVM tools and clang (`./build_clang.sh`, `./build_apple_clang.sh`)
 - Vanilla GCC as a cross-compiler for target macOS (`./build_gcc.sh`
 - The "compiler-rt" runtime library (`./build_compiler_rt.sh`)
+- The "flang-rt" runtime library (`./build_flang_rt.sh`)
 
 ---
 
@@ -79,12 +80,30 @@ _Optional:_
 
 You can run `sudo tools/get_dependencies.sh` to get these (and the optional packages) automatically. (outdated)
 
-#### Build Clang (Optional - if you need an up-to-date version of LLVM/Clang)
+#### Build Clang (Optional - if you need an up-to-date version of LLVM/Clang or need LLVM/Flang)
 
 ```sh
 ./build_clang.sh                           # Builds mainline Clang
 ./build_apple_clang.sh                     # Builds Apple's Clang
 INSTALLPREFIX=/opt/clang ./build_clang.sh  # Custom install path
+```
+
+##### LLVM Flang
+[LLVM Flang](https://flang.llvm.org/docs/) not be confused with [Classic Flang](https://github.com/flang-compiler/flang)
+was introduced in LLVM 11.x in late 2020 and the binary was `flang-new`.  It was considered "experimental" up until
+early 2025 with the release of LLVM 20.x which features both `flang` and `flang-new`, although they symlink to the same
+compiler. Even in the current release (LLVM 21.x as of this writing), some features (such as OpenMP support) are still
+considered experimental and the compiler is still improving. See [this LLVM blog](https://blog.llvm.org/posts/2025-03-11-flang-new/)
+for more details about LLVM flang.
+
+As flang is still relatively new, it is recommended to use the most recent release if you need a Fortran compiler.
+
+- The `-mmacos-version-min` option was addded in LLVM Flang 21.x
+- Separately building the Flang runtime (flang-rt) was added in LLVM Flang 21.x
+
+You can build LLVM flang alongside clang by setting `ENABLE_FORTRAN=1`
+```sh
+ENABLE_FORTRAN=1 ./build_clang.host  # Builds mainline Clang and Flang
 ```
 
 #### Build OSXCross
