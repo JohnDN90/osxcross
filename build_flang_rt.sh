@@ -43,16 +43,6 @@ case $FLANG_VERSION in
   22.* ) BRANCH=main ;;
      * ) echo "Unsupported Flang version, must be >= 21.x and <= 22.x" 1>&2; exit 1;
 esac
-  # 11.* ) BRANCH=release/11.x ;;
-  # 12.* ) BRANCH=release/12.x ;;
-  # 13.* ) BRANCH=release/13.x ;;
-  # 14.* ) BRANCH=release/14.x ;;
-  # 15.* ) BRANCH=release/15.x ;;
-  # 16.* ) BRANCH=release/16.x ;;
-  # 17.* ) BRANCH=release/17.x ;;
-  # 18.* ) BRANCH=release/18.x ;;
-  # 19.* ) BRANCH=release/19.x ;;
-  # 20.* ) BRANCH=release/20.x ;;
 
 if [ $(osxcross-cmp $CLANG_VERSION ">=" 3.5) -eq 1 ]; then
   export MACOSX_DEPLOYMENT_TARGET=10.8 # x86_64h
@@ -66,12 +56,6 @@ then
   echo ">= $MACOSX_DEPLOYMENT_TARGET SDK required" 1>&2
   exit 1
 fi
-
-# HAVE_OS_LOCK=0
-
-# if echo "#include <os/lock.h>" | xcrun clang -E - &>/dev/null; then
-#   HAVE_OS_LOCK=1
-# fi
 
 export OSXCROSS_NO_10_5_DEPRECATION_WARNING=1
 
@@ -90,59 +74,10 @@ get_sources https://github.com/llvm/llvm-project.git $BRANCH "flang-rt"
 if [ $f_res -eq 1 ]; then
   pushd "$CURRENT_BUILD_PROJECT_NAME/flang-rt" &>/dev/null
 
-  # if [ $(osxcross-cmp $SDK_VERSION "<=" 10.11) -eq 1 ]; then
-  #   # https://github.com/tpoechtrager/osxcross/issues/178
-  #   patch -p1 < $PATCH_DIR/compiler-rt_clock-gettime.patch
-  # fi
-
   EXTRA_MAKE_FLAGS=""
   if [ -n "$OCDEBUG" ]; then
     EXTRA_MAKE_FLAGS+="VERBOSE=1 "
   fi
-
-#   $SED -i 's/COMMAND xcodebuild -version -sdk ${sdk_name}.internal Path/'\
-# \ \ \ \ \ \ \ 'COMMAND xcrun -sdk ${sdk_name}.internal --show-sdk-path/g' \
-#     cmake/Modules/CompilerRTDarwinUtils.cmake
-
-#   $SED -i 's/COMMAND xcodebuild -version -sdk ${sdk_name} Path/'\
-# \ \ \ \ \ \ \ 'COMMAND xcrun -sdk ${sdk_name} --show-sdk-path/g' \
-#     cmake/Modules/CompilerRTDarwinUtils.cmake
-
-#   $SED -i 's/COMMAND xcodebuild -version -sdk ${sdk_name}.internal SDKVersion/'\
-# \ \ \ \ \ \ \ 'COMMAND xcrun -sdk ${sdk_name}.internal --show-sdk-version/g' \
-#     cmake/Modules/CompilerRTDarwinUtils.cmake
-
-#   $SED -i 's/COMMAND xcodebuild -version -sdk ${sdk_name}.internal SDKVersion/'\
-# \ \ \ \ \ \ \ 'COMMAND xcrun -sdk ${sdk_name} --show-sdk-version/g' \
-#     cmake/Modules/CompilerRTDarwinUtils.cmake
-
-#   $SED -i "s/COMMAND lipo /COMMAND xcrun lipo /g" \
-#     cmake/Modules/CompilerRTDarwinUtils.cmake
-
-#   $SED -i "s/COMMAND ld /COMMAND xcrun ld /g" \
-#     cmake/Modules/CompilerRTDarwinUtils.cmake
-
-#   $SED -i "s/COMMAND sysctl hw.cputype/COMMAND true/g" \
-#     cmake/Modules/CompilerRTDarwinUtils.cmake
-
-#   $SED -i "s/COMMAND sysctl hw.cpusubtype/COMMAND true/g" \
-#     cmake/Modules/CompilerRTDarwinUtils.cmake
-
-#   $SED -i "s/COMMAND codesign /COMMAND true /g" \
-#     cmake/Modules/AddCompilerRT.cmake
-
-#   $SED -i 's/${CMAKE_COMMAND} -E ${COMPILER_RT_LINK_OR_COPY}/ln -sf/g' \
-#     lib/builtins/CMakeLists.txt
-
-#   if [ -f "lib/orc/CMakeLists.txt" ]; then
-#     $SED -i 's/list(APPEND ORC_CFLAGS -I${DIR})//g' \
-#       lib/orc/CMakeLists.txt
-#   fi
-
-#   if [ $HAVE_OS_LOCK -eq 0 ]; then
-#     $SED -i "s/COMPILER_RT_HAS_TSAN TRUE/COMPILER_RT_HAS_TSAN FALSE/g" \
-#       cmake/config-ix.cmake
-#   fi
 
   function build
   {
@@ -295,25 +230,6 @@ if [ $f_res -eq 1 ]; then
       xcrun lipo -create "${shared_libs[@]}" -output $BUILD_DIR/flang-rt/flang-rt/libflang_rt.runtime.dylib
     fi
 
-    # arch1=$(echo $ARCHS | awk '{print $1}')
-
-    # for file in $(ls build_$arch1/flang-rt/lib/*.a build_$arch1/flang-rt/lib/*.dylib); do
-    #   libs=""
-
-    #   for arch in $ARCHS; do
-    #     lib="build_$arch/flang-rt/lib/$file"
-    #     [ -n "$libs" ] && libs+=" "
-    #     if [ -f "$lib" ]; then
-    #       libs+="$lib"
-    #     fi
-    #   done
-
-    #   xcrun lipo -create $libs -output build_$arch1/lib/darwin/$file.lipo
-    #   rm build_$arch1/lib/darwin/$file
-    #   mv build_$arch1/lib/darwin/$file.lipo build_$arch1/lib/darwin/$file
-    # done
-
-    # create_symlink build_$arch1 build
   else
     build
   fi
@@ -355,7 +271,6 @@ echo ""
 
 print_or_run mkdir -p ${CLANG_INCLUDE_DIR}
 print_or_run mkdir -p ${CLANG_DARWIN_LIB_DIR}
-# print_or_run cp -rv $BUILD_DIR/flang-rt/flang-rt/include/sanitizer ${CLANG_INCLUDE_DIR}
 
 for arch in $ARCHS; do
   print_or_run cp -v $BUILD_DIR/flang-rt/flang-rt/build_${arch}/flang-rt/lib/*.a ${CLANG_DARWIN_LIB_DIR}
