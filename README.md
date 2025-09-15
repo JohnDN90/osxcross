@@ -103,7 +103,7 @@ As flang is still relatively new, it is recommended to use the most recent relea
 
 You can build LLVM flang alongside clang by setting `ENABLE_FORTRAN=1`
 ```sh
-ENABLE_FORTRAN=1 ./build_clang.host  # Builds mainline Clang and Flang
+ENABLE_FORTRAN=1 ./build_clang.sh  # Builds mainline Clang and Flang
 ```
 
 #### Build OSXCross
