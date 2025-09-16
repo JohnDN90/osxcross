@@ -89,7 +89,7 @@ INSTALLPREFIX=/opt/clang ./build_clang.sh  # Custom install path
 ```
 
 ##### LLVM Flang
-[LLVM Flang](https://flang.llvm.org/docs/) not be confused with [Classic Flang](https://github.com/flang-compiler/flang)
+[LLVM Flang](https://flang.llvm.org/docs/), not be confused with [Classic Flang](https://github.com/flang-compiler/flang),
 was introduced in LLVM 11.x in late 2020 and the binary was `flang-new`.  It was considered "experimental" up until
 early 2025 with the release of LLVM 20.x which features both `flang` and `flang-new`, although they symlink to the same
 compiler. Even in the current release (LLVM 21.x as of this writing), some features (such as OpenMP support) are still
@@ -103,7 +103,8 @@ As flang is still relatively new, it is recommended to use the most recent relea
 
 You can build LLVM flang alongside clang by setting `ENABLE_FORTRAN=1`
 ```sh
-ENABLE_FORTRAN=1 ./build_clang.sh  # Builds mainline Clang and Flang
+ENABLE_FORTRAN=1 ./build_clang.sh   # Builds mainline Clang and Flang
+./build_flang_rt.sh                 # Builds Flang runtime library for macOS
 ```
 
 #### Build OSXCross
