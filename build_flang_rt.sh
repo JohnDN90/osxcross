@@ -221,13 +221,13 @@ if [ $f_res -eq 1 ]; then
     # Combine the separate static libraries for each architecture into a single "fat" 
     # library that supports all architectures
     if (( ${#static_libs[@]} > 0 )); then
-      xcrun lipo -create "${static_libs[@]}" -output $BUILD_DIR/flang-rt/flang-rt/libflang_rt.runtime.a
+      xcrun lipo -create "${static_libs[@]}" -output "${BUILD_DIR}/flang-rt/flang-rt/libflang_rt.runtime.a"
     fi
 
     # Combine the separate shared libraries for each architecture into a single "fat" 
     # library that supports all architectures
     if (( ${#shared_libs[@]} > 0 )); then
-      xcrun lipo -create "${shared_libs[@]}" -output $BUILD_DIR/flang-rt/flang-rt/libflang_rt.runtime.dylib
+      xcrun lipo -create "${shared_libs[@]}" -output "${BUILD_DIR}/flang-rt/flang-rt/libflang_rt.runtime.dylib"
     fi
 
   else
@@ -253,8 +253,6 @@ function print_or_run() {
   fi
 }
 
-mkdir -p ${CLANG_INCLUDE_DIR} && \
-touch ${CLANG_INCLUDE_DIR} 2>/dev/null && \
 ENABLE_FLANG_RT_INSTALL=0
 
 echo ""
@@ -264,17 +262,19 @@ if [ -z "$ENABLE_FLANG_RT_INSTALL" ]; then
   echo "Please run the following commands by hand to install flang-rt:"
 else
   echo "Installing flang-rt headers and libraries to the following paths:"
-  echo "  ${CLANG_INCLUDE_DIR}"
   echo "  ${CLANG_DARWIN_LIB_DIR}"
 fi
 echo ""
 
-print_or_run mkdir -p ${CLANG_INCLUDE_DIR}
 print_or_run mkdir -p ${CLANG_DARWIN_LIB_DIR}
 
-for arch in $ARCHS; do
-  print_or_run cp -v $BUILD_DIR/flang-rt/flang-rt/build_${arch}/flang-rt/lib/*.a ${CLANG_DARWIN_LIB_DIR}
-  print_or_run cp -v $BUILD_DIR/flang-rt/flang-rt/build_${arch}/flang-rt/lib/*.dylib ${CLANG_DARWIN_LIB_DIR}
-done
+if [ -f "${BUILD_DIR}/flang-rt/flang-rt/libflang_rt.runtime.dylib" ]; then
+  print_or_run cp -v "${BUILD_DIR}/flang-rt/flang-rt/libflang_rt.runtime.dylib" "${CLANG_DARWIN_LIB_DIR}"
+fi
+
+if [ -f "${BUILD_DIR}/flang-rt/flang-rt/libflang_rt.runtime.a" ]; then
+  print_or_run cp -v "${BUILD_DIR}/flang-rt/flang-rt/libflang_rt.runtime.a" "${CLANG_DARWIN_LIB_DIR}"
+fi
+
 
 echo ""
