@@ -88,15 +88,7 @@ if [ $f_res -eq 1 ]; then
     if [ -n "$arch" ]; then
       build_dir+="_$arch"
 
-      extra_cmake_flags+="-DDARWIN_osx_ARCHS=$arch "
-      extra_cmake_flags+="-DDARWIN_osx_BUILTIN_ARCHS=$arch "
       extra_cmake_flags+="-DCMAKE_OSX_ARCHITECTURES=$arch "
-
-      if [ $arch == "arm64" ] || [ $arch == "arm64e" ]; then
-        # https://github.com/tpoechtrager/osxcross/issues/259
-        extra_cmake_flags+="-DCOMPILER_RT_BUILD_SANITIZERS=OFF "
-        extra_cmake_flags+="-DCOMPILER_RT_BUILD_XRAY=OFF "
-      fi
 
       echo ""
       echo "Building for arch $arch ..."
@@ -124,8 +116,6 @@ if [ $f_res -eq 1 ]; then
       -DCMAKE_BUILD_TYPE=Release \
       -DCMAKE_SYSTEM_NAME=Darwin \
       -DCMAKE_OSX_SYSROOT="$(xcrun --show-sdk-path)" \
-      -DCOMPILER_RT_ENABLE_IOS=OFF \
-      -DCMAKE_LIPO="${LIPO_EXEC}" \
       -DCMAKE_AR="${AR_EXEC}" \
       -DCMAKE_NM="${NM_EXEC}" \
       -DCMAKE_RANLIB="${RANLIB_EXEC}" \
