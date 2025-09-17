@@ -197,7 +197,11 @@ if [ -z "$UNATTENDED" ]; then
   read -p "Press enter to start building."
   echo ""
 else
-  ENABLE_BOOTSTRAP=1
+  if [ -z "${DISABLE_BOOTSTRAP}" ]; then
+    ENABLE_BOOTSTRAP=1
+  else
+    unset ENABLE_BOOTSTRAP
+  fi
 fi
 
 
