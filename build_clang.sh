@@ -31,6 +31,10 @@ if [ -z "$GITPROJECT" ]; then
   GITPROJECT="llvm"
 fi
 
+CLANG_VERSION_PARTS_B=(${CLANG_VERSION//./ })
+CLANG_VERSION_MAJOR=${CLANG_VERSION_PARTS_B[0]}
+unset CLANG_VERSION_PARTS_B
+
 require cmake
 require curl
 
@@ -134,6 +138,16 @@ if [ -z "$UNATTENDED" ]; then
   echo ""
 else
   ENABLE_BOOTSTRAP=1
+fi
+
+
+if [ -n "$ENABLE_FORTRAN" ]; then
+  if [ "${CLANG_VERSION_MAJOR}" = "next" ]; then
+    : # Nothing to do
+  elif [ "${CLANG_VERSION_MAJOR}" -lt 21 ]; then
+    echo "Fortran is supported only for versions >= 21.x"
+    exit 3
+  fi
 fi
 
 # Download the GitHub repo as a ZIP file
