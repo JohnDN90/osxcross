@@ -123,22 +123,22 @@ function set_package_link()
       10)   
         CLANG_LLVM_PKG="https://github.com/apple/llvm-project/archive/refs/heads/apple/stable/20200108.zip"
         APPLE_VERSION="12.0.0"
-        REPOSITORY_STRING="clang-1200.0.32.29"
+        REPOSITORY_STRING="-1200.0.32.29"
         ;;
       9)    
         CLANG_LLVM_PKG="https://github.com/apple/llvm-project/archive/refs/heads/apple/stable/20190619.zip"
         APPLE_VERSION="11.0.3"
-        REPOSITORY_STRING="clang-1103.0.32.62"
+        REPOSITORY_STRING="-1103.0.32.62"
         ;;
       8)    
         CLANG_LLVM_PKG="https://github.com/apple/llvm-project/archive/refs/heads/apple/stable/20190104.zip"
         APPLE_VERSION="11.0.0"
-        REPOSITORY_STRING="clang-1100.0.33.17"
+        REPOSITORY_STRING="-1100.0.33.17"
         ;;
       7)    
         CLANG_LLVM_PKG="https://github.com/apple/llvm-project/archive/refs/heads/apple/stable/20180801.zip"
         APPLE_VERSION="10.0.1"
-        REPOSITORY_STRING="clang-1001.0.46.4"
+        REPOSITORY_STRING="-1001.0.46.4"
         ;;
       *)
         echo "Unknown Apple Clang version $CLANG_VERSION!" 1>&2
