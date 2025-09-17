@@ -64,22 +64,82 @@ function set_package_link()
     # with Apple LLVM we only get each major version as a stable branch so we just compare the input major version
     CLANG_VERSION_PARTS=(${CLANG_VERSION//./ })
     case ${CLANG_VERSION_PARTS[0]} in
-      next) CLANG_LLVM_PKG="https://github.com/swiftlang/llvm-project/archive/refs/heads/next.zip" ;;
-      21)   CLANG_LLVM_PKG="https://github.com/swiftlang/llvm-project/archive/refs/heads/stable/21.x.tar.gz" ;;
+      next) 
+        CLANG_LLVM_PKG="https://github.com/swiftlang/llvm-project/archive/refs/heads/next.zip"
+        APPLE_VERSION="19.0.0"
+        REPOSITORY_STRING="-1900.0.0.0-LLVM-22.0.0"
+        ;;
+      21)   
+        CLANG_LLVM_PKG="https://github.com/swiftlang/llvm-project/archive/refs/heads/stable/21.x.zip"
+        APPLE_VERSION="18.0.0"
+        REPOSITORY_STRING="-1800.0.0.0-LLVM-21.0.0"
+        ;;
       # Can't find a stable branch for 20.
-      19)   CLANG_LLVM_PKG="https://github.com/apple/llvm-project/archive/refs/heads/stable/20240723.zip" ;;
-      18)   CLANG_LLVM_PKG="https://github.com/apple/llvm-project/archive/refs/heads/stable/20240123.zip" ;;    
-      17)   CLANG_LLVM_PKG="https://github.com/apple/llvm-project/archive/refs/heads/stable/20230725.zip" ;;
-      16)   CLANG_LLVM_PKG="https://github.com/apple/llvm-project/archive/refs/heads/stable/20221013.zip" ;;
-      15)   CLANG_LLVM_PKG="https://github.com/apple/llvm-project/archive/refs/heads/stable/20220421.zip" ;;
-      14)   CLANG_LLVM_PKG="https://github.com/apple/llvm-project/archive/refs/heads/stable/20211026.zip" ;;
-      13)   CLANG_LLVM_PKG="https://github.com/apple/llvm-project/archive/refs/heads/stable/20210726.zip" ;;
-      12)   CLANG_LLVM_PKG="https://github.com/apple/llvm-project/archive/refs/heads/apple/stable/20210107.zip" ;;
-      11)   CLANG_LLVM_PKG="https://github.com/apple/llvm-project/archive/refs/heads/apple/stable/20200714.zip" ;;
-      10)   CLANG_LLVM_PKG="https://github.com/apple/llvm-project/archive/refs/heads/apple/stable/20200108.zip" ;;
-      9)    CLANG_LLVM_PKG="https://github.com/apple/llvm-project/archive/refs/heads/apple/stable/20190619.zip" ;;
-      8)    CLANG_LLVM_PKG="https://github.com/apple/llvm-project/archive/refs/heads/apple/stable/20190104.zip" ;;
-      7)    CLANG_LLVM_PKG="https://github.com/apple/llvm-project/archive/refs/heads/apple/stable/20180801.zip" ;;
+      19)   
+        CLANG_LLVM_PKG="https://github.com/apple/llvm-project/archive/refs/heads/stable/20240723.zip"
+        APPLE_VERSION="17.0.0"
+        REPOSITORY_STRING="-1700.3.19.1"
+        ;;
+      18)   
+        CLANG_LLVM_PKG="https://github.com/apple/llvm-project/archive/refs/heads/stable/20240123.zip"
+        APPLE_VERSION="16.5.0"
+        REPOSITORY_STRING="-1650.0.0.0-LLVM-18.0.0"
+        ;;    
+      17)   
+        CLANG_LLVM_PKG="https://github.com/apple/llvm-project/archive/refs/heads/stable/20230725.zip"
+        APPLE_VERSION="16.0.0"
+        REPOSITORY_STRING="-1600.0.26.6"
+        ;;
+      16)   
+        CLANG_LLVM_PKG="https://github.com/apple/llvm-project/archive/refs/heads/stable/20221013.zip"
+        APPLE_VERSION="15.0.0"
+        REPOSITORY_STRING="-1500.3.9.4"
+        ;;
+      15)   
+        CLANG_LLVM_PKG="https://github.com/apple/llvm-project/archive/refs/heads/stable/20220421.zip"
+        APPLE_VERSION="14.0.3"
+        REPOSITORY_STRING="-1403.0.22.14.1"
+        ;;
+      14)   
+        CLANG_LLVM_PKG="https://github.com/apple/llvm-project/archive/refs/heads/stable/20211026.zip"
+        APPLE_VERSION="14.0.0"
+        REPOSITORY_STRING="-1400.0.29.202"
+        ;;
+      13)   
+        CLANG_LLVM_PKG="https://github.com/apple/llvm-project/archive/refs/heads/stable/20210726.zip"
+        APPLE_VERSION="13.1.6"
+        REPOSITORY_STRING="-1316.0.21.2.5"
+        ;;
+      12)   
+        CLANG_LLVM_PKG="https://github.com/apple/llvm-project/archive/refs/heads/apple/stable/20210107.zip"
+        APPLE_VERSION="13.0.0"
+        REPOSITORY_STRING="-1300.0.29.30"
+        ;;
+      11)   
+        CLANG_LLVM_PKG="https://github.com/apple/llvm-project/archive/refs/heads/apple/stable/20200714.zip"
+        APPLE_VERSION="12.0.5"
+        REPOSITORY_STRING="-1205.0.22.11"
+        ;;
+      10)   
+        CLANG_LLVM_PKG="https://github.com/apple/llvm-project/archive/refs/heads/apple/stable/20200108.zip"
+        APPLE_VERSION="12.0.0"
+        REPOSITORY_STRING="clang-1200.0.32.29"
+        ;;
+      9)    
+        CLANG_LLVM_PKG="https://github.com/apple/llvm-project/archive/refs/heads/apple/stable/20190619.zip"
+        APPLE_VERSION="11.0.3"
+        REPOSITORY_STRING="clang-1103.0.32.62"
+        ;;
+      8)    
+        CLANG_LLVM_PKG="https://github.com/apple/llvm-project/archive/refs/heads/apple/stable/20190104.zip"
+        APPLE_VERSION="11.0.0"
+        REPOSITORY_STRING="clang-1100.0.33.17"
+        ;;
+      7)    
+        CLANG_LLVM_PKG="https://github.com/apple/llvm-project/archive/refs/heads/apple/stable/20180801.zip"
+        APPLE_VERSION="10.0.1"
+        REPOSITORY_STRING="clang-1001.0.46.4"
+        ;;
       *)
         echo "Unknown Apple Clang version $CLANG_VERSION!" 1>&2
         exit 1
@@ -216,6 +276,26 @@ fi
 
 function build()
 {
+  local EXTRA_OPTIONS=()
+  if [ $GITPROJECT == "apple" ]; then
+    APPLE_VERSION_ARRAY=(${APPLE_VERSION//./ })
+    EXTRA_OPTIONS+=(-DCLANG_VENDOR="Apple")
+    EXTRA_OPTIONS+=(-DFLANG_VENDOR="Apple")
+    EXTRA_OPTIONS+=(-DLLD_VENDOR="Apple")
+    EXTRA_OPTIONS+=(-DCLANG_VENDOR_UTI="com.apple.compilers.llvm.clang")
+    EXTRA_OPTIONS+=(-DFLANG_VENDOR_UTI="com.apple.compilers.llvm.flang")
+    EXTRA_OPTIONS+=(-DCLANG_REPOSITORY_STRING="clang${REPOSITORY_STRING}")
+    EXTRA_OPTIONS+=(-DFLANG_REPOSITORY_STRING="flang${REPOSITORY_STRING}")
+    EXTRA_OPTIONS+=(-DLLVM_PACKAGE_VERSION="${APPLE_VERSION}")
+    EXTRA_OPTIONS+=(-DCLANG_VERSION_MAJOR="${APPLE_VERSION_ARRAY[0]}")
+    EXTRA_OPTIONS+=(-DCLANG_VERSION_MINOR="${APPLE_VERSION_ARRAY[1]}")
+    EXTRA_OPTIONS+=(-DCLANG_VERSION_PATCHLEVEL="${APPLE_VERSION_ARRAY[2]}")
+    EXTRA_OPTIONS+=(-DFLANG_VERSION_MAJOR="${APPLE_VERSION_ARRAY[0]}")
+    EXTRA_OPTIONS+=(-DFLANG_VERSION_MINOR="${APPLE_VERSION_ARRAY[1]}")
+    EXTRA_OPTIONS+=(-DFLANG_VERSION_PATCHLEVEL="${APPLE_VERSION_ARRAY[2]}")
+    EXTRA_OPTIONS+=(-DLLVM_ENABLE_DUMP=ON)
+  fi
+
   stage=$1
   mkdir -p $stage
   pushd $stage &>/dev/null
@@ -226,7 +306,8 @@ function build()
     -DLLVM_ENABLE_PROJECTS="${PROJECTS}" \
     -DLLVM_ENABLE_RUNTIMES="${RUNTIMES}" \
     -DLLVM_TARGETS_TO_BUILD="X86;AArch64;ARM" \
-    -DLLVM_TEMPORARILY_ALLOW_OLD_TOOLCHAIN=1
+    -DLLVM_TEMPORARILY_ALLOW_OLD_TOOLCHAIN=1 \
+    ${EXTRA_OPTIONS[@]}
   $MAKE $2 -j $JOBS
   popd &>/dev/null
 }
